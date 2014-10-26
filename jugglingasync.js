@@ -1,6 +1,9 @@
+/*jslint node: true*/
+"use strict";
 var http = require('http');
-var fullCharList = ['','',''];
-var countdown = 3;
+var fullCharList = [];
+var countdown = process.argv.length - 2;
+var i;
 
 function readoutstrings() {
 	fullCharList.forEach(function (fullChar) {
@@ -9,22 +12,25 @@ function readoutstrings() {
 }
 
 function grabstrings(url, ii) {
-	http.get(url, function(response){
-			var fullChar = '';
-			response.setEncoding('utf8');
-			response.on('error', console.error);
-			response.on("data", function(data){
-				fullCharList[(ii-2)] += data;
-			});
-			response.on("end", function(){
-				countdown--;
-				if (countdown === 0) {
-					readoutstrings();
-				};
-			});
+	http.get(url, function (response) {
+		var content = '';
+		response.setEncoding('utf8');
+		response.on('error', function (err) {
+			console.log('Error: ', err);
 		});
-	}
+		response.on('data', function (data) {
+			content += data;
+		});
+		response.on('end', function () {
+      fullCharList[ii] = content;
+			countdown -= 1;
+      if (countdown === 0) {
+        readoutstrings();
+      }
+		});
+	});
+}
 
-for (var i = 2; i <=4; i++) {
-	grabstrings(process.argv[i], i);
+for (i = 0; i <= process.argv.length - 3; i += 1) {
+	grabstrings(process.argv[i + 2], i);
 }

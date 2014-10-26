@@ -1,13 +1,15 @@
 var http = require('http');
-var fullChar = '';
-http.get(process.argv[2], function(response){
+http.get(process.argv[2], function(response) {
+	var content = '';
 	response.setEncoding('utf8');
-	response.on('error', console.error);
-	response.on("data", function(data){
-		fullChar += data
-		});
-	response.on("end", function(){
-		console.log(fullChar.length);
-		console.log(fullChar);
-		});
+	response.on('error', function(err) {
+		console.error('Error: ' + err.message);
 	});
+	response.on('data', function(data) {
+		content += data;
+	});
+	response.on('end', function() {
+		console.log(content.length);
+		console.log(content);
+	});
+});

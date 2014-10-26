@@ -1,23 +1,25 @@
-var http = require('http')	
+var http = require('http')
 var url = require('url')
+function parsetime(time) {
+	return(JSON.stringify({hour:time.getHours(),
+							minute:time.getMinutes(),
+							second:time.getSeconds()}))
+}
+function unixtime(time) {
+	return(JSON.stringify({unixtime:time.getTime()}))
+}
 var server = http.createServer(function (req, res) {
-	res.writeHead(200, {'Content-Type': 'pplication/json'})
 	var parsedUrl = url.parse(req.url, true)
+	var response
 	if (parsedUrl.pathname === '/api/parsetime'){
-		var iso = parsedUrl.query.iso
-		var mlsec = Date.parse(iso)
-		var dateRes = new Date()
-		dateRes.setTime(mlsec)
-		res.end(JSON.stringify({hour: dateRes.getHours(), minute: dateRes.getMinutes(), second: dateRes.getSeconds()}))
+		response = parsetime(new Date(parsedUrl.query.iso))
 	}	else if (parsedUrl.pathname === '/api/unixtime'){
-		var iso = parsedUrl.query.iso
-		var mlsec = Date.parse(iso)
-		var dateRes = new Date()
-		dateRes.setTime(mlsec)
-		res.end(JSON.stringify({unixtime: dateRes.getTime()}))
+		response = unixtime(new Date(parsedUrl.query.iso))
 	}	else {
-		res.end("I'm sorry, that is an invalid request")
+		res.writeHead(404)
+		res.end()
 	}
-	
+	res.writeHead(200, {'Content-Type': 'application/json'})
+	res.end(response)
 })
-server.listen(process.argv[2])
+server.listen(+process.argv[2])

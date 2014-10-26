@@ -1,6 +1,5 @@
-var n = 0;
-for (i = 2; i<process.argv.length; i++) {
-	n += Number(process.argv[i]);
+var total = 0;
+for (i = 2; i < process.argv.length; i++) {
+  total += +(process.argv[i]);
 }
-
-console.log(n);
+console.log(total);

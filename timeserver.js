@@ -1,20 +1,22 @@
-var net = require('net');
+var net = require('net')
 
 function zeroFill(value) {
 	if (value < 10) {
-		return ('0' + value);
+		return ('0' + value)
 	}	else {
-		return (value);
+		return (value)
 	}
 }
-
+function timeFormat(time) {
+	return(time.getFullYear()+'-'
+			+zeroFill(time.getMonth()+1)+'-'
+			+zeroFill(time.getDate())+' '
+			+zeroFill(time.getHours())+':'
+			+zeroFill(time.getMinutes()))			
+}
 var server = net.createServer(function (socket) {
-	var dateTime = new Date();
-	var year = dateTime.getFullYear();
-	var month = zeroFill(dateTime.getMonth()+1);
-	var day = zeroFill(dateTime.getDate());
-	var hour = zeroFill(dateTime.getHours());
-	var minute = zeroFill(dateTime.getMinutes());
-	socket.end(''+year+'-'+month+'-'+day+' '+hour+':'+minute+'\n');	
-});
-server.listen(process.argv[2]);
+	var time = new Date()
+	var response = timeFormat(time) + '\n'
+	socket.end(response)
+})
+server.listen(process.argv[2])
